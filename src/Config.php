@@ -37,14 +37,14 @@ class Config
     {
         $keys = explode('.', strtolower($keys));
         if (empty($keys)) {
-            return null;
+            return $default;
         }
 
         $file = array_shift($keys);
 
         if (empty(self::$config[$file])) {
             if (! is_file(CONFIG_PATH . $file . '.php')) {
-                return null;
+                return $default;
             }
             self::$config[$file] = include CONFIG_PATH . $file . '.php';
         }
