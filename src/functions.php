@@ -38,3 +38,9 @@ if (! function_exists('collection')) {
         return new \Simps\Utils\Collection($data);
     }
 }
+if (! function_exists('env')) {
+    function env($key, $default = null)
+    {
+        return container()->get(\Simps\Utils\Env::class)->get($key, $default);
+    }
+}
