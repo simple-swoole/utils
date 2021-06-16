@@ -26,6 +26,8 @@ class FileHelper
      *
      * @param $path
      * @param $content
+     * @param int $flags
+     * @param null $context
      * @return bool|int
      */
     public static function writeLog($path, $content,$flags = FILE_APPEND, $context = null)
