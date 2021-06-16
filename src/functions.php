@@ -44,3 +44,37 @@ if (! function_exists('env')) {
         return container()->get(\Simps\Utils\Env::class)->get($key, $default);
     }
 }
+
+if(!function_exists('printEol')){
+    /**
+     * printEol
+     * @param $expression
+     */
+    function printEol($expression)
+    {
+        print_r($expression);
+        echo PHP_EOL;
+    }
+}
+
+if(!function_exists('echoSuccess')){
+    /**
+     * printEol
+     * @param $msg
+     */
+    function echoSuccess($msg)
+    {
+        printEol('[' . date('Y-m-d H:i:s') . '] [INFO] ' . "\033[32m{$msg}\033[0m");
+    }
+}
+
+if(!function_exists('echoError')){
+    /**
+     * printEol
+     * @param $msg
+     */
+    function echoError($msg)
+    {
+        printEol('[' . date('Y-m-d H:i:s') . '] [ERROR] ' . "\033[31m{$msg}\033[0m");
+    }
+}
