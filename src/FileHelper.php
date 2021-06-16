@@ -1,20 +1,26 @@
 <?php
 
 declare(strict_types=1);
-
+/**
+ * This file is part of Simps.
+ *
+ * @link     https://simps.io
+ * @document https://doc.simps.io
+ * @license  https://github.com/simple-swoole/simps/blob/master/LICENSE
+ */
 namespace Simps\Utils;
 
 class FileHelper
 {
     /**
      * 检测目录并循环创建目录
-     * mkdir
+     * mkdir.
      * @param $catalogue
      * @return bool
      */
     public static function mkdir($catalogue)
     {
-        if (!file_exists($catalogue)) {
+        if (! file_exists($catalogue)) {
             self::mkdir(dirname($catalogue));
             mkdir($catalogue, 0777);
         }
@@ -22,15 +28,15 @@ class FileHelper
     }
 
     /**
-     * 写入日志
-     *
+     * 写入日志.
+     * writeLog.
      * @param $path
      * @param $content
      * @param int $flags
      * @param null $context
      * @return bool|int
      */
-    public static function writeLog($path, $content,$flags = FILE_APPEND, $context = null)
+    public static function writeLog($path, $content, $flags = FILE_APPEND, $context = null)
     {
         self::mkdir(dirname($path));
         return file_put_contents($path, "\r\n" . $content, $flags, $context);
@@ -38,26 +44,29 @@ class FileHelper
 
     /**
      * 遍历目录
-     * scanDirectory
+     * scanDirectory.
      * @param $dirPath
      * @return array
      */
-    static function scanDirectory($dirPath)
+    public static function scanDirectory($dirPath)
     {
-        if (!is_dir($dirPath))
+        if (! is_dir($dirPath)) {
             return [];
+        }
 
-        $dirPath = rtrim($dirPath,'/') . '/';
+        $dirPath = rtrim($dirPath, '/') . '/';
 
         $dirs = [$dirPath];
 
-        $fileContainer = array();
+        $fileContainer = [];
         try {
             do {
                 $workDir = array_pop($dirs);
                 $scanResult = scandir($workDir);
                 foreach ($scanResult as $files) {
-                    if ($files == '.' || $files == '..') continue;
+                    if ($files == '.' || $files == '..') {
+                        continue;
+                    }
                     $realPath = $workDir . $files;
                     if (is_dir($realPath)) {
                         array_push($dirs, $realPath . '/');
@@ -75,7 +84,7 @@ class FileHelper
 
     /**
      * 获取文件夹大小
-     * getDirSize
+     * getDirSize.
      * @param $dir
      * @return false|int
      */
@@ -84,11 +93,11 @@ class FileHelper
         $handle = opendir($dir);
         $sizeResult = 0;
         while (false !== ($FolderOrFile = readdir($handle))) {
-            if ($FolderOrFile != "." && $FolderOrFile != "..") {
-                if (is_dir("$dir/$FolderOrFile")) {
-                    $sizeResult += self::getDirSize("$dir/$FolderOrFile");
+            if ($FolderOrFile != '.' && $FolderOrFile != '..') {
+                if (is_dir("{$dir}/{$FolderOrFile}")) {
+                    $sizeResult += self::getDirSize("{$dir}/{$FolderOrFile}");
                 } else {
-                    $sizeResult += filesize("$dir/$FolderOrFile");
+                    $sizeResult += filesize("{$dir}/{$FolderOrFile}");
                 }
             }
         }
@@ -99,7 +108,7 @@ class FileHelper
 
     /**
      * 基于数组创建目录
-     * createDirOrFiles
+     * createDirOrFiles.
      * @param $files
      */
     public static function createDirOrFiles($files)
@@ -114,17 +123,17 @@ class FileHelper
     }
 
     /**
-     * removeDirectory
-     * @param       $dir
+     * removeDirectory.
+     * @param $dir
      * @param array $options
      */
     public static function removeDirectory($dir, $options = [])
     {
-        if (!is_dir($dir)) {
+        if (! is_dir($dir)) {
             return;
         }
-        if (!empty($options['traverseSymlinks']) || !is_link($dir)) {
-            if (!($handle = opendir($dir))) {
+        if (! empty($options['traverseSymlinks']) || ! is_link($dir)) {
+            if (! ($handle = opendir($dir))) {
                 return;
             }
             while (($file = readdir($handle)) !== false) {
@@ -148,7 +157,7 @@ class FileHelper
     }
 
     /**
-     * unlink
+     * unlink.
      * @param $path
      * @return bool
      */
@@ -156,7 +165,7 @@ class FileHelper
     {
         $isWindows = DIRECTORY_SEPARATOR === '\\';
 
-        if (!$isWindows) {
+        if (! $isWindows) {
             return unlink($path);
         }
 
@@ -172,9 +181,9 @@ class FileHelper
     }
 
     /**
-     * getMimeType
+     * getMimeType.
      * @param $file
-     * @return mixed|null
+     * @return null|mixed
      */
     public static function getMimeType($file)
     {
@@ -189,6 +198,6 @@ class FileHelper
                 }
             }
         }
-        return  null;
+        return null;
     }
 }

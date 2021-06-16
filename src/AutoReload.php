@@ -1,7 +1,13 @@
 <?php
 
 declare(strict_types=1);
-
+/**
+ * This file is part of Simps.
+ *
+ * @link     https://simps.io
+ * @document https://doc.simps.io
+ * @license  https://github.com/simple-swoole/simps/blob/master/LICENSE
+ */
 namespace Simps\Utils;
 
 use Swoole\Process;
@@ -12,12 +18,10 @@ use Swoole\Timer;
  * 'process'   => [
  *      [\Simps\Utils\AutoReload::class, 'start'],
  * ],
- * Class AutoReload
- * @package Simps\Utils
+ * Class AutoReload.
  */
 class AutoReload
 {
-
     /**
      * @var Server
      */
@@ -29,26 +33,25 @@ class AutoReload
     protected $hotReloadProcess;
 
     /**
-     * 文件类型
+     * 文件类型.
      * @var array
      */
     protected $reloadFileTypes = ['.php' => true];
 
     /**
-     * 监听文件
+     * 监听文件.
      * @var array
      */
-    protected $lastFileList    = [];
+    protected $lastFileList = [];
 
     /**
-     * 是否正在重载
+     * 是否正在重载.
+     * @var bool
      */
     protected $reloading = false;
 
-
     /**
      * AutoReload constructor.
-     * @param Server $server
      */
     public function __construct(Server $server)
     {
@@ -56,30 +59,28 @@ class AutoReload
     }
 
     /**
-     * start
+     * start.
      * @return Process
      */
     public static function start(Server $server)
     {
         $autoLoad = new self($server);
 
-        $autoLoad->hotReloadProcess = new Process([$autoLoad,'hotReloadProcessCallBack'], false, 2, false);
+        $autoLoad->hotReloadProcess = new Process([$autoLoad, 'hotReloadProcessCallBack'], false, 2, false);
 
         return $autoLoad->hotReloadProcess;
     }
 
     /**
-     * hotReloadProcessCallBack
-     * @param Process $worker
+     * hotReloadProcessCallBack.
      */
     public function hotReloadProcessCallBack(Process $worker)
     {
-
-        $this->hotReloadProcess->signal(SIGUSR1, [$this,'signalCallBack']);
+        $this->hotReloadProcess->signal(SIGUSR1, [$this, 'signalCallBack']);
 
         $this->run(BASE_PATH);
 
-        $currentOS  = PHP_OS;
+        $currentOS = PHP_OS;
 
         $currentPID = $this->hotReloadProcess->pid;
 
@@ -88,26 +89,16 @@ class AutoReload
 
     public function signalCallBack()
     {
-
-        echoSuccess( "重载时间: " . date('Y-m-d H:i:s'));
+        echoSuccess('重载时间: ' . date('Y-m-d H:i:s'));
 
         $res = $this->server->reload();
 
-        $res?echoSuccess('重载成功'):echoError('重载失败');
-
-    }
-
-    /**
-     * sendReloadSignal
-     */
-    protected function sendReloadSignal()
-    {
-        Process::kill($this->hotReloadProcess->pid,SIGUSR1);
+        $res ? echoSuccess('重载成功') : echoError('重载失败');
     }
 
     /**
      * 添加文件类型
-     * addFileType
+     * addFileType.
      * @param $type
      * @return $this
      */
@@ -121,8 +112,8 @@ class AutoReload
     }
 
     /**
-     * watch
-     * @param      $dir
+     * watch.
+     * @param $dir
      */
     public function watch($dir)
     {
@@ -134,8 +125,8 @@ class AutoReload
             //检测文件类型
             $fileType = strrchr($file, '.');
             if (isset($this->reloadFileTypes[$fileType])) {
-                $fileInfo   = new \SplFileInfo($file);
-                $mtime  = $fileInfo->getMTime();
+                $fileInfo = new \SplFileInfo($file);
+                $mtime = $fileInfo->getMTime();
                 $inode = $fileInfo->getInode();
                 $dirtyList[$inode] = $mtime;
             }
@@ -153,7 +144,8 @@ class AutoReload
     }
 
     /**
-     * run
+     * run.
+     * @param mixed $dir
      */
     public function run($dir)
     {
@@ -162,5 +154,13 @@ class AutoReload
         Timer::tick(1000, function () use ($dir) {
             $this->watch($dir);
         });
+    }
+
+    /**
+     * sendReloadSignal.
+     */
+    protected function sendReloadSignal()
+    {
+        Process::kill($this->hotReloadProcess->pid, SIGUSR1);
     }
 }

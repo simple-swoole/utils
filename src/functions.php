@@ -45,9 +45,9 @@ if (! function_exists('env')) {
     }
 }
 
-if(!function_exists('printEol')){
+if (! function_exists('printEol')) {
     /**
-     * printEol
+     * printEol.
      * @param $expression
      */
     function printEol($expression)
@@ -57,9 +57,9 @@ if(!function_exists('printEol')){
     }
 }
 
-if(!function_exists('echoSuccess')){
+if (! function_exists('echoSuccess')) {
     /**
-     * printEol
+     * printEol.
      * @param $msg
      */
     function echoSuccess($msg)
@@ -68,9 +68,9 @@ if(!function_exists('echoSuccess')){
     }
 }
 
-if(!function_exists('echoError')){
+if (! function_exists('echoError')) {
     /**
-     * printEol
+     * printEol.
      * @param $msg
      */
     function echoError($msg)
